@@ -3,6 +3,9 @@ const fs = require("fs");
 
 const app = express();
 const PORT = process.env.PORT || 3001;
+const api = require("./");
+
+//app.use("/api", api)
 
 const path = require('path');
 
@@ -17,9 +20,9 @@ app.get("/notes", (req, res) => {
 
 //gives the notes list with the getNotes function
 app.get("/api/notes", (req, res) => {
-   const notes = require('./db/db.json');
-   console.log('notes getten')
-   return res.json(notes)
+   const notels = fs.readFileSync('./db/db.json', 'utf8');
+   let notes = JSON.parse(notels);
+   res.json(notes)
 })
 
 //adds the notes to the note list with a random ID#
@@ -45,7 +48,7 @@ app.post("/api/notes", (req, res) => {
         }
     })
     
-    return res.json(newNote);
+    return res.json(noteString);
 });
 
 //hopefully splices out the notes from the notes list based on ID match
@@ -62,6 +65,7 @@ app.delete('/api/notes/:id', (req, res) => {
                      err
                     ? console.error(err)
                     :console.log('new note posted!'));
+                    res.sendStatus(200);
                 } else {
                     console.log('nope');
                 }
